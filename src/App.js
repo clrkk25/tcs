@@ -164,8 +164,9 @@ function App() {
     fetchLeaderboard();
   };
 
-  // 历史表：只增大不减小
+  // 历史表：只在分数创新高时才更新，死亡时不清空
   const updateHistoryBoard = async (username, length) => {
+    if (!username) return;
     const { data: existArr } = await supabase
       .from('snake_leaderboard')
       .select('*')
@@ -183,7 +184,6 @@ function App() {
         .from('snake_leaderboard')
         .insert([{ content: username, length }]);
     }
-    fetchHistoryBoard();
   };
 
   // 实时表：每次都更新，死亡时 length=0
@@ -202,7 +202,6 @@ function App() {
         .from('snake_realtime')
         .insert([{ content: username, length }]);
     }
-    fetchRealtimeBoard();
   };
 
   // 贪吃蛇游戏逻辑
@@ -246,7 +245,8 @@ function App() {
         setUsernameInput(text);
         setShowDeathModal(true);
       }, 100);
-      updateRealtimeBoard(text, 0); // 死亡时上传0
+      updateRealtimeBoard(text, 0).then(fetchRealtimeBoard); // 死亡时上传0并刷新实时榜
+      updateHistoryBoard(text, snake.length).then(fetchHistoryBoard);
       setSnake([{ x: 10, y: 10 }]);
       setDirection('right');
       setPendingDirection('right');
@@ -263,7 +263,8 @@ function App() {
         setUsernameInput(text);
         setShowDeathModal(true);
       }, 100);
-      updateRealtimeBoard(text, 0);
+      updateRealtimeBoard(text, 0).then(fetchRealtimeBoard);
+      updateHistoryBoard(text, snake.length).then(fetchHistoryBoard);
       setSnake([{ x: 10, y: 10 }]);
       setDirection('right');
       setPendingDirection('right');
@@ -277,11 +278,13 @@ function App() {
     if (head.x === food.x && head.y === food.y) {
       setFood(placeFood(newSnake));
       setSnakeLength(newSnake.length);
-      updateRealtimeBoard(text, newSnake.length);
+      updateRealtimeBoard(text, newSnake.length).then(fetchRealtimeBoard);
+      updateHistoryBoard(text, newSnake.length).then(fetchHistoryBoard);
     } else {
       newSnake.pop();
       setSnakeLength(newSnake.length);
-      updateRealtimeBoard(text, newSnake.length);
+      updateRealtimeBoard(text, newSnake.length).then(fetchRealtimeBoard);
+      updateHistoryBoard(text, newSnake.length).then(fetchHistoryBoard);
     }
     setSnake(newSnake);
   };
