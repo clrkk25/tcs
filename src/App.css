@@ -1,5 +1,25 @@
+/* 修改外层容器的 margin 和 padding，让内容靠近顶部 */
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  /* 去除顶部空白 */
+  padding-top: 0;
+}
+
 .App {
   text-align: center;
+  margin-top: 0;
+  padding-top: 0;
+}
+
+/* 如果有外层容器设置了 margin/padding-top，也一并去除 */
+div[style*="margin: 40px auto"] {
+  margin-top: 0 !important;
+  padding-top: 0 !important;
 }
 
 .App-logo {
@@ -35,4 +55,156 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+/* 贪吃蛇和排行榜样式 */
+.game-container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 24px;
+  margin: 0 auto;
+  width: max-content;
+}
+
+.side-board {
+  width: 120px;
+  min-height: 480px;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px 0 rgba(60,60,67,0.08);
+  padding: 16px 8px;
+  font-size: 15px;
+  color: #222;
+  text-align: left;
+  margin-top: 32px;
+  box-sizing: border-box;
+  overflow-y: auto;
+  max-height: 520px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  position: relative;
+}
+
+/* 历史排行榜底部提示固定到底部 */
+.history-board-footer {
+  margin-top: auto;
+  color: #888;
+  font-size: 16px;
+  white-space: pre-line;
+  padding-bottom: 8px;
+}
+
+.cell {
+  width: 24px;
+  height: 24px;
+  background: #fff;
+  border-radius: 8px;
+  transition: background 0.2s;
+  box-shadow: 0 1px 2px 0 rgba(60, 60, 67, 0.08);
+}
+
+.snake {
+  background: linear-gradient(135deg, #34c759 60%, #30d158 100%);
+  box-shadow: 0 2px 8px 0 rgba(52, 199, 89, 0.15);
+  position: relative;
+  z-index: 1;
+}
+
+.snake-head {
+  background: linear-gradient(135deg, #30d158 80%, #34c759 100%);
+  box-shadow: 0 4px 16px 0 rgba(52, 199, 89, 0.25);
+  border-radius: 50%;
+}
+
+.snake-eye {
+  position: absolute;
+  top: 7px;
+  width: 5px;
+  height: 5px;
+  background: #222;
+  border-radius: 50%;
+}
+
+.snake-eye.left {
+  left: 6px;
+}
+
+.snake-eye.right {
+  right: 6px;
+}
+
+.snake-tail {
+  opacity: 0.85;
+  filter: brightness(0.95);
+}
+
+.food {
+  background: none !important;
+  position: relative;
+  z-index: 2;
+}
+
+.food-apple {
+  width: 18px;
+  height: 18px;
+  margin: 2px auto 0 auto;
+  border-radius: 50%;
+  background: radial-gradient(circle at 6px 6px, #ff7a7a 60%, #ff375f 100%);
+  box-shadow: 0 2px 8px 0 rgba(255, 69, 58, 0.18);
+  position: relative;
+}
+
+.food-highlight {
+  position: absolute;
+  left: 4px;
+  top: 3px;
+  width: 6px;
+  height: 3px;
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 3px 3px 3px 3px;
+}
+
+.food-leaf {
+  position: absolute;
+  top: -4px;
+  left: 8px;
+  width: 4px;
+  height: 8px;
+  background: linear-gradient(135deg, #34c759 60%, #30d158 100%);
+  border-radius: 2px 2px 6px 6px;
+  transform: rotate(-30deg);
+}
+
+@media (max-width: 600px) {
+  .game-container {
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+    width: 100vw;
+  }
+  .side-board {
+    display: none;
+  }
+  #game {
+    width: 100vw;
+  }
+}
+
+.modal-mask {
+  position: fixed;
+  left: 0; top: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+.modal-content {
+  background: #fff;
+  padding: 32px 24px;
+  border-radius: 12px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.18);
+  text-align: center;
 }
